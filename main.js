@@ -15,7 +15,7 @@ import RasterSource from 'ol/source/Raster';
 import XYZ from 'ol/source/XYZ';
 import {bbox as bboxStrategy} from 'ol/loadingstrategy';
 import {fromLonLat, transformExtent} from 'ol/proj';
-import {buffer} from 'ol/extent';
+import {buffer, getIntersection} from 'ol/extent';
 import {GeoJSON} from 'ol/format';
 import {
   Circle as CircleStyle,
@@ -74,6 +74,7 @@ function getMaidenheadGrid(lon, lat, level) {
 function getMaidenheadGridFeatures(extent, level) {
   const features = [];
   const newExtent = transformExtent(extent, 'EPSG:3857', 'EPSG:4326');
+  getIntersection(newExtent, [-180, -90, 180, 90], newExtent);
   let step = 10;
   for (let n = 1; n < level; n += 1) {
     step /= (n % 2) ? 10 : 24;
