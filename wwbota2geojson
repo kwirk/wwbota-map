@@ -1,0 +1,34 @@
+#!/usr/bin/env python
+"""
+Simple script to convert WW BOTA to GeoJson
+"""
+import csv
+import json
+import sys
+
+if __name__ == "__main__":
+
+    features = []
+    geojson = {
+        "type": "FeatureCollection",
+        "features": features
+    }
+    with open(sys.argv[1], newline='', encoding='utf-8-sig') as input_file:
+        reader = csv.DictReader(input_file)
+
+        for row in reader:
+            point = float(row['Long']), float(row['Lat'])
+            features.append({
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": point,
+                },
+                "properties": {
+                    "scheme": row["Scheme"],
+                    "reference": row["Reference"],
+                    "name": row["Name"],
+                    "type": row["Type"],
+                }
+            })
+    json.dump(geojson, sys.stdout, separators=(',', ':'))
