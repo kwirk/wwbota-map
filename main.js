@@ -126,21 +126,6 @@ function getMaidenheadGridFeatures(extent, level) {
 }
 
 // Styles
-function gridStyle(feature) {
-  return new Style({
-    stroke: new Stroke({
-      color: 'rgba(100, 100, 100, 0.2)',
-      width: 3,
-    }),
-    text: new Text({
-      text: feature.getId(),
-      font: 'bold 30px ui-rounded',
-      stroke: new Stroke({color: 'rgba(100, 100, 100, 0.5)', width: 2}),
-      fill: null,
-    }),
-  });
-}
-
 function createTextStyle(feature, resolution, text, color, offset = 15) {
   return new Text({
     text: text,
@@ -160,9 +145,12 @@ function colorOpacity(color, opacity = 0.2) {
 const circleImageStyleCache = new LRUCache({max: 32});
 
 function pointStyleFunction(feature, resolution, color, radius) {
-  let text = feature.get('reference');
-  if (resolution < 40) {
-    text += ` ${feature.get('name')}`;
+  let text;
+  if (resolution < 350) {
+    text = feature.get('reference');
+    if (resolution < 40) {
+      text += ` ${feature.get('name')}`;
+    }
   }
   let circleRadius = 5;
   let circleColor = color;
@@ -185,7 +173,7 @@ function pointStyleFunction(feature, resolution, color, radius) {
 
   return new Style({
     image: circleImageStyle,
-    text: resolution < 350 ? createTextStyle(feature, resolution, text, color, textOffset) : undefined,
+    text: text && createTextStyle(feature, resolution, text, color, textOffset),
   });
 }
 
@@ -207,24 +195,24 @@ const OSMSource = new OSM({
 });
 
 const bingGroup = new LayerGroup({
- title: 'Bing Imagery',
- shortTitle: 'BING',
- type: 'base',
- combine: true,
- visible: false,
- layers: [],
+  title: 'Bing Imagery',
+  shortTitle: 'BING',
+  type: 'base',
+  combine: true,
+  visible: false,
+  layers: [],
 });
 
 bingGroup.once('change:visible', () => {
- // Callback to only set layer when used
- // to avoid using API credits unnecessarily
- bingGroup.getLayers().push(new TileLayer({
-   source: new BingMaps({
-     key: import.meta.env.VITE_BING_APIKEY,
-     imagerySet: 'Aerial',
-     maxZoom: 19,
-   }),
- }));
+  // Callback to only set layer when used
+  // to avoid using API credits unnecessarily
+  bingGroup.getLayers().push(new TileLayer({
+    source: new BingMaps({
+      key: import.meta.env.VITE_BING_APIKEY,
+      imagerySet: 'Aerial',
+      maxZoom: 19,
+    }),
+  }));
 });
 
 // Used for layers switching between Circle and Polygon styles
@@ -239,11 +227,10 @@ function withData(url, func, error) {
     xhr.onerror = error;
     xhr.onload = () => {
       if (xhr.status === 200) {
-        dataCache[url] = new GeoJSONReference(
-        ).readFeaturesFromObject(xhr.response, {
+        dataCache[url] = new GeoJSONReference().readFeaturesFromObject(xhr.response, {
           dataProjection: 'EPSG:4326',
           featureProjection: 'EPSG:3857',
-        })
+        });
         func(dataCache[url]);
       } else {
         error();
