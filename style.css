@@ -10,3 +10,14 @@
   top: 6em;
   left: .5em;
 }
+
+
+#map ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+#map li {
+  margin-top: 5px;
+}

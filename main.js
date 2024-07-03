@@ -1,5 +1,6 @@
 import './style.css';
 import 'ol-layerswitcher/dist/ol-layerswitcher.css';
+import 'ol-popup/dist/ol-popup.css';
 
 import {
   Collection, Feature, Map, View,
@@ -35,10 +36,32 @@ import {
 } from 'ol/control';
 import Link from 'ol/interaction/Link';
 import LayerSwitcher from 'ol-layerswitcher';
+import Popup from 'ol-popup';
 import { LRUCache } from 'lru-cache';
 
 import WWBOTA from './data/WWBOTA.json?url';
 import COUNTRIES from './data/countries.json?url';
+
+const COLOURS = {
+  UKBOTA: 'rgba(122, 174, 0, 1)',
+  ONBOTA: 'rgba(244, 197, 36, 1)',
+  OKBOTA: 'rgba(13, 71, 160, 1)',
+};
+
+const COUNTRY_SCHEME = {
+  GBR: 'UKBOTA',
+  IMN: 'UKBOTA',
+  JEY: 'UKBOTA',
+  GGY: 'UKBOTA',
+  BEL: 'ONBOTA',
+  CZE: 'OKBOTA',
+};
+
+const URLS = {
+  UKBOTA: 'https://bunkersontheair.org/',
+  ONBOTA: 'http://on3moh.be/ONBOTA/onbota.html',
+  OKBOTA: 'http://www.bunkersontheair.cz/',
+};
 
 class GeoJSONReference extends GeoJSON {
   readFeatureFromObject(object, options) {
@@ -100,21 +123,6 @@ function getMaidenheadGridFeatures(extent, level) {
     }
   }
   return features;
-}
-
-const COLOURS = {
-  UKBOTA: 'rgba(122, 174, 0, 1)',
-  ONBOTA: 'rgba(244, 197, 36, 1)',
-  OKBOTA: 'rgba(13, 71, 160, 1)',
-}
-
-const COUNTRY_SCHEME = {
-  GBR: 'UKBOTA',
-  IMN: 'UKBOTA',
-  JEY: 'UKBOTA',
-  GGY: 'UKBOTA',
-  BEL: 'ONBOTA',
-  CZE: 'OKBOTA',
 }
 
 // Styles
@@ -476,6 +484,43 @@ LayerSwitcher.forEachRecursive(map, (layer) => {
   layer.on('change:visible', () => {
     if (layer.getVisible()) { attribution.setCollapsed(false); }
   });
+});
+
+const popup = new Popup();
+map.addOverlay(popup);
+map.on('singleclick', (event) => {
+  const refs = new Set();
+  const content = document.createElement('ul');
+  map.forEachFeatureAtPixel(
+    event.pixel,
+    (feature) => {
+      const ref = feature.get('reference');
+      const countryCode = feature.get('ISO_A3');
+      if (ref && !refs.has(ref)) {
+        refs.add(ref);
+        const listItem = document.createElement('li');
+        const refText = document.createElement('b');
+        refText.innerText = ref;
+        const refName = document.createElement('em');
+        refName.innerText = ` ${feature.get('name')}`;
+        listItem.appendChild(refText);
+        listItem.appendChild(refName);
+        content.appendChild(listItem);
+      } else if (countryCode) {
+        const scheme = COUNTRY_SCHEME[countryCode];
+
+        const refLink = document.createElement('a');
+        refLink.href = URLS[scheme];
+        refLink.textContent = scheme;
+        refLink.target = '_blank';
+
+        const listItem = document.createElement('li');
+        listItem.appendChild(refLink);
+        content.appendChild(listItem);
+      }
+    },
+  );
+  if (content.hasChildNodes()) { popup.show(event.coordinate, content); }
 });
 
 const source = new VectorSource();
