@@ -17,6 +17,8 @@ if __name__ == "__main__":
         reader = csv.DictReader(input_file)
 
         for row in reader:
+            if not row["Reference"]:  # Skip blank rows
+                continue
             point = float(row['Long']), float(row['Lat'])
             features.append({
                 "type": "Feature",
