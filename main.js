@@ -16,7 +16,7 @@ import RasterSource from 'ol/source/Raster';
 import XYZ from 'ol/source/XYZ';
 import {bbox as bboxStrategy} from 'ol/loadingstrategy';
 import {fromLonLat, transformExtent} from 'ol/proj';
-import {buffer, getIntersection} from 'ol/extent';
+import {buffer, getIntersection, extend} from 'ol/extent';
 import {GeoJSON} from 'ol/format';
 import {
   Circle as CircleStyle,
@@ -244,8 +244,8 @@ const map = new Map({
   target: 'map',
   controls: [new Zoom(), new Rotate(), new ScaleLine()],
   view: new View({
-    center: fromLonLat([2, 53], 'EPSG:3857'),
-    zoom: 5,
+    center: [0, 0],
+    zoom: 0,
     maxZoom: 20,
   }),
   layers: [
@@ -300,8 +300,20 @@ const map = new Map({
       maxZoom: 8,
       style: (feature, resolution) => polygonStyleFunction(feature, resolution, null, COLOURS[COUNTRY_SCHEME[feature.get('ISO_A3')]], true),
       source: new VectorSource({
-        format: new GeoJSON(),
-        url: COUNTRIES,
+        loader: function loader(extent, resolution, projection, success, failure) {
+          const vectorSource = this;
+          withData(
+            COUNTRIES,
+            (features) => {
+              vectorSource.addFeatures(features);
+              success(features);
+            },
+            () => {
+              vectorSource.removeLoadedExtent(extent);
+              failure();
+            },
+          );
+        },
       }),
     }),
     new LayerGroup({
@@ -353,7 +365,7 @@ const map = new Map({
               updateWhileAnimating: true,
               style: (feature, resolution) => pointStyleFunction(feature, resolution, COLOURS[feature.get('scheme')], 1000 / resolution),
               source: new VectorSource({
-                attributions: 'BOTA&nbsp;references:<a href="https://wwbota.org/" target="_blank">©&nbsp;Bunkers&nbsp;on&nbsp;the&nbsp;Air</a>.',
+                attributions: 'WWBOTA&nbsp;references:<a href="https://wwbota.org/" target="_blank">©&nbsp;Bunkers&nbsp;on&nbsp;the&nbsp;Air</a>.',
                 loader: function loader(extent, resolution, projection, success, failure) {
                   const vectorSource = this;
                   withData(
@@ -422,7 +434,7 @@ const map = new Map({
   ],
 });
 
-const link = new Link({params: ['x', 'y', 'z'], replace: true});
+const link = new Link({params: ['x', 'y', 'z'], replace: true, animate: false});
 function layersLinkCallback(newValue) {
   if (newValue) { // only update if no null
     const layers = newValue.split(' ');
@@ -459,7 +471,21 @@ LayerSwitcher.forEachRecursive(map, (layer) => {
 activeLayers.on('change:length', () => {
   link.update('layers', activeLayers.getArray().join(' '));
 });
-map.addInteraction(link);
+
+withData(
+  COUNTRIES,
+  (features) => {
+    const extent = features[0].getGeometry().getExtent();
+    features.forEach((feature) => {
+      extend(extent, feature.getGeometry().getExtent());
+    });
+    map.getView().fit(extent, {padding: [50, 50, 50, 50]});
+    map.addInteraction(link); // Add link here, so map moves after fit.
+  },
+  () => {
+    map.addInteraction(link);
+  },
+);
 
 // Close attribution on map move; open when layers change.
 const attribution = new Attribution({collapsible: true, collapsed: false});
