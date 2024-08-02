@@ -59,8 +59,8 @@ const COUNTRY_SCHEME = {
 
 const URLS = {
   UKBOTA: 'https://bunkersontheair.org/',
-  ONBOTA: 'http://on3moh.be/ONBOTA/onbota.html',
-  OKBOTA: 'http://www.bunkersontheair.cz/',
+  ONBOTA: 'https://on3moh.be/ONBOTA/onbota.html',
+  OKBOTA: 'https://okbota.cz/',
 };
 
 class GeoJSONReference extends GeoJSON {
