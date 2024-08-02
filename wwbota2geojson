@@ -16,7 +16,7 @@ if __name__ == "__main__":
     with open(sys.argv[1], newline='', encoding='cp1252', errors='replace') as input_file:
         reader = csv.DictReader(input_file)
 
-        for n, row in enumerate(reader, 1):
+        for n, row in enumerate(reader, 2):
             if not row["Reference"]:  # Skip blank rows
                 continue
             try:
