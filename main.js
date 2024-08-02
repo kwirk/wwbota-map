@@ -48,6 +48,10 @@ const COLOURS = {
   OKBOTA: 'rgba(13, 71, 160, 1)',
 };
 
+const RADIUS = { // metres; default 1km
+  OKBOTA: 150,
+};
+
 const COUNTRY_SCHEME = {
   GBR: 'UKBOTA',
   IMN: 'UKBOTA',
@@ -363,7 +367,7 @@ const map = new Map({
               maxZoom: 11,
               updateWhileInteracting: true,
               updateWhileAnimating: true,
-              style: (feature, resolution) => pointStyleFunction(feature, resolution, COLOURS[feature.get('scheme')], 1000 / resolution),
+              style: (feature, resolution) => pointStyleFunction(feature, resolution, COLOURS[feature.get('scheme')], (RADIUS[feature.get('scheme')] || 1000) / resolution),
               source: new VectorSource({
                 attributions: 'WWBOTA&nbsp;references:<a href="https://wwbota.org/" target="_blank">©&nbsp;Bunkers&nbsp;on&nbsp;the&nbsp;Air</a>.',
                 loader: function loader(extent, resolution, projection, success, failure) {
@@ -406,8 +410,8 @@ const map = new Map({
                           const centerXY = geometry.getCoordinates();
                           for (let i = 0; i < nSteps + 1; i += 1) {
                             const angle = (2 * Math.PI * (i / nSteps)) % (2 * Math.PI);
-                            const x = centerXY[0] + Math.cos(-angle) * 1000;
-                            const y = centerXY[1] + Math.sin(-angle) * 1000;
+                            const x = centerXY[0] + Math.cos(-angle) * (RADIUS[feature.get('scheme')] || 1000);
+                            const y = centerXY[1] + Math.sin(-angle) * (RADIUS[feature.get('scheme')] || 1000);
                             coordinates.push([x, y]);
                           }
                           const newFeature = feature.clone();
