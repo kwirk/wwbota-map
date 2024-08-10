@@ -46,6 +46,14 @@ const COLOURS = {
   UKBOTA: 'rgba(122, 174, 0, 1)',
   ONBOTA: 'rgba(244, 197, 36, 1)',
   OKBOTA: 'rgba(13, 71, 160, 1)',
+  Z3BOTA: 'rgba(212, 5, 8, 1)',
+};
+
+const OUTLINE_COLOURS = {
+  UKBOTA: 'rgba(0, 0, 0, 1)',
+  ONBOTA: 'rgba(0, 0, 0, 1)',
+  OKBOTA: 'rgba(197, 7, 38, 1)',
+  Z3BOTA: 'rgba(252, 228, 0, 1)',
 };
 
 const RADIUS = { // metres; default 1km
@@ -59,12 +67,14 @@ const COUNTRY_SCHEME = {
   GGY: 'UKBOTA',
   BEL: 'ONBOTA',
   CZE: 'OKBOTA',
+  MKD: 'Z3BOTA',
 };
 
 const URLS = {
   UKBOTA: 'https://bunkersontheair.org/',
   ONBOTA: 'https://on3moh.be/ONBOTA/onbota.html',
   OKBOTA: 'https://okbota.cz/',
+  Z3BOTA: 'https://wwbota.org/z3bota/',
 };
 
 class GeoJSONReference extends GeoJSON {
@@ -181,14 +191,14 @@ function pointStyleFunction(feature, resolution, color, radius) {
   });
 }
 
-function polygonStyleFunction(feature, resolution, text, color, bStroke = false, stroke = true) {
+function polygonStyleFunction(feature, resolution, text, color, outlineColor, opacity = 0.2) {
   return new Style({
-    stroke: stroke ? new Stroke({
-      color: bStroke ? '#000000' : color,
-      width: bStroke ? 1 : 3,
-    }) : undefined,
+    stroke: new Stroke({
+      color: outlineColor || '#000000',
+      width: outlineColor ? 2 : 1,
+    }),
     fill: new Fill({
-      color: colorOpacity(color, stroke ? 0.2 : 0.5),
+      color: colorOpacity(color, opacity),
     }),
     text: text ? createTextStyle(feature, resolution, text, color, 0) : undefined,
   });
@@ -302,7 +312,7 @@ const map = new Map({
     }),
     new VectorLayer({
       maxZoom: 8,
-      style: (feature, resolution) => polygonStyleFunction(feature, resolution, null, COLOURS[COUNTRY_SCHEME[feature.get('ISO_A3')]], true),
+      style: (feature, resolution) => polygonStyleFunction(feature, resolution, null, COLOURS[COUNTRY_SCHEME[feature.get('ISO_A3')]], OUTLINE_COLOURS[COUNTRY_SCHEME[feature.get('ISO_A3')]], 0.5),
       source: new VectorSource({
         loader: function loader(extent, resolution, projection, success, failure) {
           const vectorSource = this;
@@ -390,7 +400,7 @@ const map = new Map({
               minZoom: 11,
               updateWhileInteracting: true,
               updateWhileAnimating: true,
-              style: (feature, resolution) => polygonStyleFunction(feature, resolution, `${feature.get('reference')} ${feature.get('name')}`, COLOURS[feature.get('scheme')], true),
+              style: (feature, resolution) => polygonStyleFunction(feature, resolution, `${feature.get('reference')} ${feature.get('name')}`, COLOURS[feature.get('scheme')]),
               source: new VectorSource({
                 attributions: 'WWBOTA&nbsp;references:<a href="https://wwbota.org/" target="_blank">©&nbsp;Bunkers&nbsp;on&nbsp;the&nbsp;Air</a>.',
                 strategy: bboxStrategy,
