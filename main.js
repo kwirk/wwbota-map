@@ -382,7 +382,7 @@ const map = new Map({
                 const centerLonLat = toLonLat(centerXY, 'EPSG:3857');
                 const scaleFactor = 1 / Math.cos(centerLonLat[1] * (Math.PI / 180));
                 const radius = (RADIUS[feature.get('scheme')] || 1000) * scaleFactor;
-                return pointStyleFunction(feature, resolution, COLOURS[feature.get('scheme')], radius / resolution)
+                return pointStyleFunction(feature, resolution, COLOURS[feature.get('scheme')], radius / resolution);
               },
               source: new VectorSource({
                 attributions: 'WWBOTA&nbsp;references:<a href="https://wwbota.org/" target="_blank">©&nbsp;Bunkers&nbsp;on&nbsp;the&nbsp;Air</a>.',
@@ -421,20 +421,11 @@ const map = new Map({
                         const geometry = feature.getGeometry();
                         if (vectorSource.getFeatureById(feature.getId()) === null
                             && geometry.intersectsExtent(expandedExtent)) {
-                          const coordinates = [];
-                          const nSteps = 128;
                           const centerXY = geometry.getCoordinates();
                           const centerLonLat = toLonLat(centerXY, 'EPSG:3857');
-                          const scaleFactor = 1 / Math.cos(centerLonLat[1] * (Math.PI / 180));
-                          const radius = (RADIUS[feature.get('scheme')] || 1000) * scaleFactor;
-                          for (let i = 0; i < nSteps + 1; i += 1) {
-                            const angle = (2 * Math.PI * (i / nSteps)) % (2 * Math.PI);
-                            const x = centerXY[0] + Math.cos(-angle) * radius;
-                            const y = centerXY[1] + Math.sin(-angle) * radius;
-                            coordinates.push([x, y]);
-                          }
                           const newFeature = feature.clone();
-                          newFeature.setGeometry(new Polygon([coordinates]));
+                          const newGeometry = circular(centerLonLat, 1000, 64).transform('EPSG:4326', 'EPSG:3857');
+                          newFeature.setGeometry(newGeometry);
                           newFeature.setId(feature.getId()); // ID reset on clone
                           newFeatures.push(newFeature);
                         }
