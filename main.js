@@ -16,7 +16,12 @@ import RasterSource from 'ol/source/Raster';
 import XYZ from 'ol/source/XYZ';
 import {bbox as bboxStrategy} from 'ol/loadingstrategy';
 import {fromLonLat, toLonLat, transformExtent} from 'ol/proj';
-import {buffer, getIntersection, extend} from 'ol/extent';
+import {
+  buffer,
+  getCenter,
+  getIntersection,
+  extend,
+} from 'ol/extent';
 import {GeoJSON} from 'ol/format';
 import {
   Circle as CircleStyle,
@@ -416,7 +421,10 @@ const map = new Map({
                     WWBOTA,
                     (features) => {
                       const newFeatures = [];
-                      const expandedExtent = buffer(extent, 1000); // To capture centre point
+                      const newExtent = transformExtent(extent, 'EPSG:3857', 'EPSG:4326');
+                      const extentCenter = getCenter(newExtent);
+                      const scaleFactor = 1 / Math.cos(extentCenter[1] * (Math.PI / 180));
+                      const expandedExtent = buffer(extent, scaleFactor * 1000);
                       features.forEach((feature) => {
                         const geometry = feature.getGeometry();
                         if (vectorSource.getFeatureById(feature.getId()) === null
