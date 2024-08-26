@@ -436,7 +436,7 @@ const map = new Map({
                           const centerXY = geometry.getCoordinates();
                           const centerLonLat = toLonLat(centerXY, 'EPSG:3857');
                           const newFeature = feature.clone();
-                          const newGeometry = circular(centerLonLat, 1000, 64).transform('EPSG:4326', 'EPSG:3857');
+                          const newGeometry = circular(centerLonLat, RADIUS[feature.get('scheme')] || 1000, 64).transform('EPSG:4326', 'EPSG:3857');
                           newFeature.setGeometry(newGeometry);
                           newFeature.setId(feature.getId()); // ID reset on clone
                           newFeatures.push(newFeature);
