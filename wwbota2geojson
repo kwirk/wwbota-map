@@ -31,7 +31,7 @@ if __name__ == "__main__":
                     "coordinates": point,
                 },
                 "properties": {
-                    "scheme": row["Scheme"],
+                    "scheme": row["Scheme"].strip(),
                     "reference": row["Reference"],
                     "name": row["Name"],
                     "type": row["Type"],
