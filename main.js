@@ -53,6 +53,7 @@ const COLOURS = {
   OKBOTA: 'rgba(13, 71, 160, 1)',
   Z3BOTA: 'rgba(212, 5, 8, 1)',
   ZABOTA: 'rgba(212, 5, 8, 1)',
+  S5BOTA: 'rgba(24, 123, 34, 1)',
 };
 
 const OUTLINE_COLOURS = {
@@ -61,6 +62,7 @@ const OUTLINE_COLOURS = {
   OKBOTA: 'rgba(197, 7, 38, 1)',
   Z3BOTA: 'rgba(252, 228, 0, 1)',
   ZABOTA: 'rgba(0, 0, 0, 1)',
+  S5BOTA: 'rgba(211, 0, 19, 1)',
 };
 
 const RADIUS = { // metres; default 1km
@@ -76,6 +78,7 @@ const COUNTRY_SCHEME = {
   CZE: 'OKBOTA',
   MKD: 'Z3BOTA',
   ALB: 'ZABOTA',
+  SVN: 'S5BOTA',
 };
 
 const URLS = {
@@ -84,6 +87,7 @@ const URLS = {
   OKBOTA: 'https://okbota.cz/',
   Z3BOTA: 'https://wwbota.org/z3bota/',
   ZABOTA: 'https://wwbota.org/zabota/',
+  S5BOTA: 'https://wwbota.org/s5bota-2/',
 };
 
 class GeoJSONReference extends GeoJSON {
