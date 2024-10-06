@@ -83,7 +83,7 @@ const COUNTRY_SCHEME = {
 
 const URLS = {
   UKBOTA: 'https://bunkersontheair.org/',
-  ONBOTA: 'https://on3moh.be/ONBOTA/onbota.html',
+  ONBOTA: 'https://onbota.be',
   OKBOTA: 'https://okbota.cz/',
   Z3BOTA: 'https://wwbota.org/z3bota/',
   ZABOTA: 'https://wwbota.org/zabota/',
