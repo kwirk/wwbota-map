@@ -54,6 +54,7 @@ const COLOURS = {
   Z3BOTA: 'rgba(212, 5, 8, 1)',
   ZABOTA: 'rgba(212, 5, 8, 1)',
   S5BOTA: 'rgba(24, 123, 34, 1)',
+  FBOTA: 'rgba(13, 71, 160, 1)',
 };
 
 const OUTLINE_COLOURS = {
@@ -63,6 +64,7 @@ const OUTLINE_COLOURS = {
   Z3BOTA: 'rgba(252, 228, 0, 1)',
   ZABOTA: 'rgba(0, 0, 0, 1)',
   S5BOTA: 'rgba(211, 0, 19, 1)',
+  FBOTA: 'rgba(197, 7, 38, 1)',
 };
 
 const RADIUS = { // metres; default 1km
@@ -79,6 +81,7 @@ const COUNTRY_SCHEME = {
   MKD: 'Z3BOTA',
   ALB: 'ZABOTA',
   SVN: 'S5BOTA',
+  FRA: 'FBOTA',
 };
 
 const URLS = {
@@ -88,6 +91,7 @@ const URLS = {
   Z3BOTA: 'https://wwbota.org/z3bota/',
   ZABOTA: 'https://wwbota.org/zabota/',
   S5BOTA: 'https://wwbota.org/s5bota-2/',
+  FBOTA: 'https://wwbota.org/fbota/',
 };
 
 class GeoJSONReference extends GeoJSON {
@@ -325,7 +329,7 @@ const map = new Map({
     }),
     new VectorLayer({
       maxZoom: 8,
-      style: (feature, resolution) => polygonStyleFunction(feature, resolution, null, COLOURS[COUNTRY_SCHEME[feature.get('ISO_A3')]], OUTLINE_COLOURS[COUNTRY_SCHEME[feature.get('ISO_A3')]], 0.5),
+      style: (feature, resolution) => polygonStyleFunction(feature, resolution, null, COLOURS[COUNTRY_SCHEME[feature.get('ADM0_A3')]], OUTLINE_COLOURS[COUNTRY_SCHEME[feature.get('ADM0_A3')]], 0.5),
       source: new VectorSource({
         loader: function loader(extent, resolution, projection, success, failure) {
           const vectorSource = this;
@@ -538,7 +542,7 @@ map.on('singleclick', (event) => {
     event.pixel,
     (feature) => {
       const ref = feature.get('reference');
-      const countryCode = feature.get('ISO_A3');
+      const countryCode = feature.get('ADM0_A3');
       if (ref && !refs.has(ref)) {
         refs.add(ref);
         const listItem = document.createElement('li');
