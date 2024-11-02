@@ -21,7 +21,7 @@ if __name__ == "__main__":
                 continue
             try:
                 point = float(row['Long']), float(row['Lat'])
-            except ValueError as e:
+            except (ValueError, TypeError) as e:
                 print(f"Error on line {n}: {e!r}", file=sys.stderr)
                 continue
             features.append({
