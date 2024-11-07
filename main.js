@@ -56,6 +56,7 @@ const COLOURS = {
   S5BOTA: 'rgba(24, 123, 34, 1)',
   FBOTA: 'rgba(13, 71, 160, 1)',
   LABOTA: 'rgba(197, 7, 38, 1)',
+  ITABOTA: 'rgba(197, 7, 38, 1)',
 };
 
 const OUTLINE_COLOURS = {
@@ -67,6 +68,7 @@ const OUTLINE_COLOURS = {
   S5BOTA: 'rgba(211, 0, 19, 1)',
   FBOTA: 'rgba(197, 7, 38, 1)',
   LABOTA: 'rgba(13, 71, 160, 1)',
+  ITABOTA: 'rgba(24, 123, 34, 1)',
 };
 
 const RADIUS = { // metres; default 1km
@@ -85,6 +87,7 @@ const COUNTRY_SCHEME = {
   SVN: 'S5BOTA',
   FRA: 'FBOTA',
   NOR: 'LABOTA',
+  ITA: 'ITABOTA',
 };
 
 const URLS = {
@@ -96,6 +99,7 @@ const URLS = {
   S5BOTA: 'https://wwbota.org/s5bota-2/',
   FBOTA: 'https://wwbota.org/fbota/',
   LABOTA: 'https://wwbota.org/labota/',
+  ITABOTA: 'https://wwbota.org/itabota/',
 };
 
 class GeoJSONReference extends GeoJSON {
