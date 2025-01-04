@@ -72,7 +72,7 @@ const OUTLINE_COLOURS = {
 };
 
 const RADIUS = { // metres; default 1km
-  OKBOTA: 150,
+  OKBOTA: 300,
 };
 
 const COUNTRY_SCHEME = {
