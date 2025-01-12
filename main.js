@@ -514,20 +514,22 @@ activeLayers.on('change:length', () => {
   link.update('layers', activeLayers.getArray().join(' '));
 });
 
-withData(
-  COUNTRIES,
-  (features) => {
-    const extent = features[0].getGeometry().getExtent();
-    features.forEach((feature) => {
-      extend(extent, feature.getGeometry().getExtent());
-    });
-    map.getView().fit(extent, {padding: [50, 50, 50, 50]});
-    map.addInteraction(link); // Add link here, so map moves after fit.
-  },
-  () => {
-    map.addInteraction(link);
-  },
-);
+map.once('rendercomplete', () => {
+  withData(
+    COUNTRIES,
+    (features) => {
+      const extent = features[0].getGeometry().getExtent();
+      features.forEach((feature) => {
+        extend(extent, feature.getGeometry().getExtent());
+      });
+      map.getView().fit(extent, {padding: [50, 50, 50, 50]});
+      map.addInteraction(link); // Add link here, so map moves after fit.
+    },
+    () => {
+      map.addInteraction(link);
+    },
+  );
+});
 
 // Close attribution on map move; open when layers change.
 const attribution = new Attribution({collapsible: true, collapsed: false});
