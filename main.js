@@ -106,7 +106,7 @@ const URLS = {
   Z3BOTA: 'https://wwbota.org/z3bota/',
   ZABOTA: 'https://wwbota.org/zabota/',
   S5BOTA: 'https://wwbota.org/s5bota-2/',
-  FBOTA: 'https://wwbota.org/fbota/',
+  FBOTA: 'https://www.qsl.net/f1lpt/',
   LABOTA: 'https://wwbota.org/labota/',
   ITABOTA: 'https://wwbota.org/itabota/',
   EIBOTA: 'https://wwbota.org/eibota/',
