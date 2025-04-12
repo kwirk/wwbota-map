@@ -59,6 +59,7 @@ const COLOURS = {
   ITABOTA: 'rgba(197, 7, 38, 1)',
   EIBOTA: 'rgba(76, 176, 80, 1)',
   PABOTA: 'rgba(176, 22, 35, 1)',
+  DLBOTA: 'rgba(255, 207, 0, 1)',
 };
 
 const OUTLINE_COLOURS = {
@@ -73,6 +74,7 @@ const OUTLINE_COLOURS = {
   ITABOTA: 'rgba(24, 123, 34, 1)',
   EIBOTA: 'rgba(234, 122, 12, 1)',
   PABOTA: 'rgba(27, 68, 140, 1)',
+  DLBOTA: 'rgba(222, 0, 0, 1)',
 };
 
 const RADIUS = { // metres; default 1km
@@ -94,6 +96,7 @@ const COUNTRY_SCHEME = {
   ITA: 'ITABOTA',
   IRL: 'EIBOTA',
   NLD: 'PABOTA',
+  DEU: 'DLBOTA',
 };
 
 const URLS = {
@@ -108,6 +111,7 @@ const URLS = {
   ITABOTA: 'https://wwbota.org/itabota/',
   EIBOTA: 'https://wwbota.org/eibota/',
   PABOTA: 'https://pa3efr.nl/index.php/miscellaneous/dutch-bunkers-on-the-air-pabota',
+  DLBOTA: 'https://wwbota.org/dlbota/',
 };
 
 class GeoJSONReference extends GeoJSON {
