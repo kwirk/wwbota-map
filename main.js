@@ -111,7 +111,7 @@ const URLS = {
   ITABOTA: 'https://wwbota.org/itabota/',
   EIBOTA: 'https://wwbota.org/eibota/',
   PABOTA: 'https://pa3efr.nl/index.php/miscellaneous/dutch-bunkers-on-the-air-pabota',
-  DLBOTA: 'https://wwbota.org/dlbota/',
+  DLBOTA: 'https://dlbota.de/',
 };
 
 class GeoJSONReference extends GeoJSON {
