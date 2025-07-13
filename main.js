@@ -331,6 +331,19 @@ const map = new Map({
             url: 'https://{a-c}.tile.opentopomap.org/{z}/{x}/{y}.png',
           }),
         }),
+        new TileLayer({
+          title: 'ESRI World Imagery',
+          shortTitle: 'ESRIWI',
+          type: 'base',
+          visible: false,
+          source: new XYZ({
+            attributions: ['Powered by Esri',
+              'Source: Esri, DigitalGlobe, GeoEye, Earthstar Geographics, CNES/Airbus DS, USDA, USGS, AeroGRID, IGN, and the GIS User Community'],
+            attributionsCollapsible: false,
+            url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+            maxZoom: 23
+          })
+        })
       ],
     }),
     new VectorLayer({
@@ -482,7 +495,7 @@ function layersLinkCallback(newValue) {
       const shortTitle = layer.get('shortTitle');
       if (shortTitle) {
         if (layers.includes(shortTitle)
-            || (layers.includes('BING') && shortTitle === "OSMG")) {
+            || (layers.includes('BING') && shortTitle === "ESRIWI")) {
           layer.setVisible(true);
         } else {
           layer.setVisible(false);
