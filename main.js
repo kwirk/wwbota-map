@@ -61,6 +61,7 @@ const COLOURS = {
   DLBOTA: 'rgba(255, 207, 0, 1)',
   ROBOTA: 'rgba(1, 34, 105, 1)',
   EABOTA: 'rgba(173, 21, 25, 1)',
+  '9MBOTA': 'rgba(2, 0, 102, 1)',
 };
 
 const OUTLINE_COLOURS = {
@@ -78,6 +79,7 @@ const OUTLINE_COLOURS = {
   DLBOTA: 'rgba(222, 0, 0, 1)',
   ROBOTA: 'rgba(213, 9, 39, 1)',
   EABOTA: 'rgba(250, 189, 0, 1)',
+  '9MBOTA': 'rgba(255, 202, 0, 1)',
 };
 
 const RADIUS = { // metres; default 1km
@@ -103,6 +105,7 @@ const COUNTRY_SCHEME = {
   DEU: 'DLBOTA',
   ROU: 'ROBOTA',
   ESP: 'EABOTA',
+  MYS: '9MBOTA',
 };
 
 const URLS = {
@@ -120,6 +123,7 @@ const URLS = {
   DLBOTA: 'https://dlbota.de/',
   ROBOTA: 'https://www.robota.org.ro/',
   EABOTA: 'https://eabota.es/',
+  '9MBOTA': 'https://9mbota.hamradio.my/',
 };
 
 class GeoJSONReference extends GeoJSON {
