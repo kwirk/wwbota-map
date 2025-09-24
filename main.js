@@ -127,7 +127,7 @@ const URLS = {
   ROBOTA: 'https://www.robota.org.ro/',
   EABOTA: 'https://eabota.es/',
   '9MBOTA': 'https://9mbota.hamradio.my/',
-  SPBOTA: 'https://wwbota.org/spbota/',
+  SPBOTA: 'https://www.spbota.pl/',
 };
 
 class GeoJSONReference extends GeoJSON {
