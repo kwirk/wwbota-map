@@ -63,6 +63,7 @@ const COLOURS = {
   EABOTA: 'rgba(173, 21, 25, 1)',
   '9MBOTA': 'rgba(2, 0, 102, 1)',
   SPBOTA: 'rgba(220, 20, 60, 1)',
+  CABOTA: 'rgba(255, 0, 0, 1)',
 };
 
 const OUTLINE_COLOURS = {
@@ -82,6 +83,7 @@ const OUTLINE_COLOURS = {
   EABOTA: 'rgba(250, 189, 0, 1)',
   '9MBOTA': 'rgba(255, 202, 0, 1)',
   SPBOTA: 'rgba(255, 255, 255, 1)',
+  CABOTA: 'rgba(255, 255, 255, 1)',
 };
 
 const RADIUS = { // metres; default 1km
@@ -109,6 +111,7 @@ const COUNTRY_SCHEME = {
   ESP: 'EABOTA',
   MYS: '9MBOTA',
   POL: 'SPBOTA',
+  CAN: 'CABOTA',
 };
 
 const URLS = {
@@ -128,6 +131,7 @@ const URLS = {
   EABOTA: 'https://eabota.es/',
   '9MBOTA': 'https://9mbota.hamradio.my/',
   SPBOTA: 'https://www.spbota.pl/',
+  CABOTA: 'https://wwbota.org/',
 };
 
 class GeoJSONReference extends GeoJSON {
