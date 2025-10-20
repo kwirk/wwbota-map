@@ -37,7 +37,7 @@ jobs:
       - name: Generate WWBOTA GeoJSON
         run: curl -JL https://wwbota.org/wwbota-3/ | python wwbota2geojson /dev/stdin > data/WWBOTA.json
       - name: Set up Node
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version: 20
           cache: 'npm'
