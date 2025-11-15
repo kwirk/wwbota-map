@@ -43,7 +43,6 @@ import LayerSwitcher from 'ol-layerswitcher';
 import Popup from 'ol-popup';
 import { LRUCache } from 'lru-cache';
 
-import WWBOTA from './data/WWBOTA.json?url';
 import COUNTRIES from './data/countries.json?url';
 
 const COLOURS = {
@@ -261,34 +260,26 @@ function polygonStyleFunction(feature, resolution, text, color, outlineColor, op
   });
 }
 
+
+function otaGridStrategy(extent) {
+  const newExtent = transformExtent(extent, 'EPSG:3857', 'EPSG:4326');
+  const [x0, y0, xN, yN] = [
+    Math.floor(newExtent[0]/5)*5,
+    Math.floor(newExtent[1]/2.5)*2.5,
+    Math.ceil(newExtent[2]/5)*5,
+    Math.ceil(newExtent[3]/2.5)*2.5];
+  const extents = [];
+  for (let x = x0; x < xN; x += 5) {
+    for (let y = y0; y < yN; y += 2.5) {
+      extents.push(transformExtent([x, y, x + 5, y + 2.5], 'EPSG:4326', 'EPSG:3857'));
+    }
+  }
+  return extents;
+}
+
 const OSMSource = new OSM({
   attributions: 'Map:&nbsp;©<a href="https://openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>&nbsp;contributors.',
 });
-
-// Used for layers switching between Circle and Polygon styles
-const dataCache = {};
-function withData(url, func, error) {
-  if (dataCache[url] !== undefined) {
-    func(dataCache[url]);
-  } else {
-    const xhr = new XMLHttpRequest();
-    xhr.responseType = 'json';
-    xhr.open('GET', url);
-    xhr.onerror = error;
-    xhr.onload = () => {
-      if (xhr.status === 200) {
-        dataCache[url] = new GeoJSONReference().readFeaturesFromObject(xhr.response, {
-          dataProjection: 'EPSG:4326',
-          featureProjection: 'EPSG:3857',
-        });
-        func(dataCache[url]);
-      } else {
-        error();
-      }
-    };
-    xhr.send();
-  }
-}
 
 const map = new Map({
   target: 'map',
@@ -362,20 +353,8 @@ const map = new Map({
       maxZoom: 8,
       style: (feature, resolution) => polygonStyleFunction(feature, resolution, null, COLOURS[COUNTRY_SCHEME[feature.get('ADM0_A3')]], OUTLINE_COLOURS[COUNTRY_SCHEME[feature.get('ADM0_A3')]], 0.5),
       source: new VectorSource({
-        loader: function loader(extent, resolution, projection, success, failure) {
-          const vectorSource = this;
-          withData(
-            COUNTRIES,
-            (features) => {
-              vectorSource.addFeatures(features);
-              success(features);
-            },
-            () => {
-              vectorSource.removeLoadedExtent(extent);
-              failure();
-            },
-          );
-        },
+        format: new GeoJSON(),
+        url: COUNTRIES,
       }),
     }),
     new LayerGroup({
@@ -434,19 +413,16 @@ const map = new Map({
               },
               source: new VectorSource({
                 attributions: 'WWBOTA&nbsp;references:<a href="https://wwbota.org/" target="_blank">©&nbsp;Bunkers&nbsp;on&nbsp;the&nbsp;Air</a>.',
-                loader: function loader(extent, resolution, projection, success, failure) {
-                  const vectorSource = this;
-                  withData(
-                    WWBOTA,
-                    (WWBOTAfeatures) => {
-                      vectorSource.addFeatures(WWBOTAfeatures);
-                      success(WWBOTAfeatures);
-                    },
-                    () => {
-                      vectorSource.removeLoadedExtent(extent);
-                      failure();
-                    },
-                  );
+                format: new GeoJSONReference(),
+                strategy: otaGridStrategy,
+                url: (extent) => {
+                  const newExtent = transformExtent(extent, 'EPSG:3857', 'EPSG:4326');
+                  const [minLon, minLat, maxLon, maxLat] = [
+                    Math.round(newExtent[0]/5)*5,
+                    Math.round(newExtent[1]/2.5)*2.5,
+                    Math.round(newExtent[2]/5)*5,
+                    Math.round(newExtent[3]/2.5)*2.5];
+                  return `https://api.wwbota.org/bunkers/?format=GEOJSON&bbox=${minLon},${minLat},${maxLon},${maxLat}`;
                 },
               }),
             }),
@@ -457,38 +433,43 @@ const map = new Map({
               style: (feature, resolution) => polygonStyleFunction(feature, resolution, `${feature.get('reference')} ${feature.get('name')}`, COLOURS[feature.get('scheme')]),
               source: new VectorSource({
                 attributions: 'WWBOTA&nbsp;references:<a href="https://wwbota.org/" target="_blank">©&nbsp;Bunkers&nbsp;on&nbsp;the&nbsp;Air</a>.',
-                strategy: bboxStrategy,
+                format: new GeoJSONReference(),
+                strategy: otaGridStrategy,
                 loader: function loader(extent, resolution, projection, success, failure) {
                   const vectorSource = this;
-                  withData(
-                    WWBOTA,
-                    (features) => {
+                  const newExtent = transformExtent(extent, 'EPSG:3857', 'EPSG:4326');
+                  const [minLon, minLat, maxLon, maxLat] = [
+                    Math.round(newExtent[0]/5)*5,
+                    Math.round(newExtent[1]/2.5)*2.5,
+                    Math.round(newExtent[2]/5)*5,
+                    Math.round(newExtent[3]/2.5)*2.5];
+                  const url = `https://api.wwbota.org/bunkers/?format=GEOJSON&bbox=${minLon},${minLat},${maxLon},${maxLat}`;
+                  const xhr = new XMLHttpRequest();
+                  xhr.open('GET', url);
+                  xhr.responseType = 'json';
+                  function onError() {
+                    vectorSource.removeLoadedExtent(extent);
+                    failure();
+                  }
+                  xhr.onerror = onError;
+                  xhr.onload = () => {
+                    if (xhr.status === 200) {
                       const newFeatures = [];
-                      const newExtent = transformExtent(extent, 'EPSG:3857', 'EPSG:4326');
-                      const extentCenter = getCenter(newExtent);
-                      const scaleFactor = 1 / Math.cos(extentCenter[1] * (Math.PI / 180));
-                      const expandedExtent = buffer(extent, scaleFactor * 1000);
+                      const features = vectorSource.getFormat().readFeatures(xhr.response);
                       features.forEach((feature) => {
                         const geometry = feature.getGeometry();
-                        if (vectorSource.getFeatureById(feature.getId()) === null
-                            && geometry.intersectsExtent(expandedExtent)) {
-                          const centerXY = geometry.getCoordinates();
-                          const centerLonLat = toLonLat(centerXY, 'EPSG:3857');
-                          const newFeature = feature.clone();
+                        if (vectorSource.getFeatureById(feature.getId()) === null) {
+                          const centerLonLat = geometry.getCoordinates();
                           const newGeometry = circular(centerLonLat, RADIUS[feature.get('scheme')] || 1000, 64).transform('EPSG:4326', 'EPSG:3857');
-                          newFeature.setGeometry(newGeometry);
-                          newFeature.setId(feature.getId()); // ID reset on clone
-                          newFeatures.push(newFeature);
+                          feature.setGeometry(newGeometry);
+                          newFeatures.push(feature);
                         }
                       });
                       vectorSource.addFeatures(newFeatures);
                       success(newFeatures);
-                    },
-                    () => {
-                      vectorSource.removeLoadedExtent(extent);
-                      failure();
-                    },
-                  );
+                    };
+                  };
+                  xhr.send();
                 },
               }),
             }),
@@ -536,23 +517,6 @@ LayerSwitcher.forEachRecursive(map, (layer) => {
 });
 activeLayers.on('change:length', () => {
   link.update('layers', activeLayers.getArray().join(' '));
-});
-
-map.once('rendercomplete', () => {
-  withData(
-    COUNTRIES,
-    (features) => {
-      const extent = features[0].getGeometry().getExtent();
-      features.forEach((feature) => {
-        extend(extent, feature.getGeometry().getExtent());
-      });
-      map.getView().fit(extent, {padding: [50, 50, 50, 50]});
-      map.addInteraction(link); // Add link here, so map moves after fit.
-    },
-    () => {
-      map.addInteraction(link);
-    },
-  );
 });
 
 // Close attribution on map move; open when layers change.

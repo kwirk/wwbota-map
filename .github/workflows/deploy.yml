@@ -30,12 +30,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.12'
-      - name: Generate WWBOTA GeoJSON
-        run: curl "https://api.wwbota.org/bunkers/?format=CSV" | python wwbota2geojson /dev/stdin > data/WWBOTA.json
       - name: Set up Node
         uses: actions/setup-node@v6
         with:
@@ -44,8 +38,6 @@ jobs:
       - name: Install Node dependencies
         run: npm ci
       - name: Build
-        env:
-          VITE_BING_APIKEY: ${{ secrets.BING_APIKEY }}
         run: npm run build
       - name: Setup Pages
         uses: actions/configure-pages@v5
