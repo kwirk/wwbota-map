@@ -63,6 +63,7 @@ const COLOURS = {
   '9MBOTA': 'rgba(2, 0, 102, 1)',
   SPBOTA: 'rgba(220, 20, 60, 1)',
   CABOTA: 'rgba(255, 0, 0, 1)',
+  '9ABOTA': 'rgba(22, 21, 145, 1)',
 };
 
 const OUTLINE_COLOURS = {
@@ -83,6 +84,7 @@ const OUTLINE_COLOURS = {
   '9MBOTA': 'rgba(255, 202, 0, 1)',
   SPBOTA: 'rgba(255, 255, 255, 1)',
   CABOTA: 'rgba(255, 255, 255, 1)',
+  '9ABOTA': 'rgba(246, 0, 1, 1)',
 };
 
 const RADIUS = { // metres; default 1km
@@ -111,6 +113,7 @@ const COUNTRY_SCHEME = {
   MYS: '9MBOTA',
   POL: 'SPBOTA',
   CAN: 'CABOTA',
+  HRV: '9ABOTA',
 };
 
 const URLS = {
@@ -131,6 +134,7 @@ const URLS = {
   '9MBOTA': 'https://9mbota.hamradio.my/',
   SPBOTA: 'https://www.spbota.pl/',
   CABOTA: 'https://wwbota.org/',
+  '9ABOTA': 'https://wwbota.org/',
 };
 
 class GeoJSONReference extends GeoJSON {
