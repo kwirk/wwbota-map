@@ -88,7 +88,6 @@ const OUTLINE_COLOURS = {
 };
 
 const RADIUS = { // metres; default 1km
-  OKBOTA: 300,
   PABOTA: 300,
 };
 
