@@ -64,6 +64,7 @@ const COLOURS = {
   SPBOTA: 'rgba(220, 20, 60, 1)',
   CABOTA: 'rgba(255, 0, 0, 1)',
   '9ABOTA': 'rgba(22, 21, 145, 1)',
+  USBOTA: 'rgba(13, 71, 160, 1)',
 };
 
 const OUTLINE_COLOURS = {
@@ -85,6 +86,7 @@ const OUTLINE_COLOURS = {
   SPBOTA: 'rgba(255, 255, 255, 1)',
   CABOTA: 'rgba(255, 255, 255, 1)',
   '9ABOTA': 'rgba(246, 0, 1, 1)',
+  USBOTA: 'rgba(197, 7, 38, 1)',
 };
 
 const RADIUS = { // metres; default 1km
@@ -113,6 +115,7 @@ const COUNTRY_SCHEME = {
   POL: 'SPBOTA',
   CAN: 'CABOTA',
   HRV: '9ABOTA',
+  USA: 'USBOTA',
 };
 
 const URLS = {
@@ -134,6 +137,7 @@ const URLS = {
   SPBOTA: 'https://www.spbota.pl/',
   CABOTA: 'https://wwbota.org/',
   '9ABOTA': 'https://wwbota.org/',
+  USBOTA: 'https://wwbota.org/usbota/',
 };
 
 class GeoJSONReference extends GeoJSON {
